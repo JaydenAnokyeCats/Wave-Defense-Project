@@ -1,7 +1,7 @@
 import pygame
 import sys
 
-class Game:
+class Game: 
     def __init__(self):
         pygame.init()
         
@@ -32,7 +32,7 @@ class Game:
                     sys.exit()
                     
             
-            self.screen.blit(pygame.transform.scale(self.display, self.screen.get_size()))
+            self.screen.blit(pygame.transform.scale(self.display, self.screen.get_size())) #rwrrwwrwrrrwwrwrwrr
             pygame.display.update()
         
         
