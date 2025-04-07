@@ -1,4 +1,4 @@
-import pygame
+import pygame 
 import sys
 
 class Game: 
@@ -13,6 +13,8 @@ class Game:
         
         self.display = pygame.Surface((900,700))
         
+        self.img = pygame.image.load('xRXXModel-Creation.0012.png')
+        
         # self.image_surface
         
         
@@ -24,6 +26,7 @@ class Game:
         # Game Loop
         while running:
             self.display.fill((0,200,0)) # Placeholder method for me setting a background
+            self.screen.blit(self.img,(0,0))
 
             
             for event in pygame.event.get():
@@ -32,7 +35,7 @@ class Game:
                     sys.exit()
                     
             
-            self.screen.blit(pygame.transform.scale(self.display, self.screen.get_size())) #rwrrwwrwrrrwwrwrwrr
+            self.screen.blit(pygame.transform.scale(self.display, self.screen.get_size())) 
             pygame.display.update()
         
         
