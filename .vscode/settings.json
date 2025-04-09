@@ -3,7 +3,9 @@
         "blit",
         "Blits",
         "blitted",
+        "colliderect",
         "colorkey",
-        "KEYUP"
+        "KEYUP",
+        "offest"
     ]
 }
