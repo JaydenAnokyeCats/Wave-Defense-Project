@@ -6,4 +6,5 @@ class Enemy:
         
     
     def Follow_Player(self, player_x, player_y):
+        
         pass

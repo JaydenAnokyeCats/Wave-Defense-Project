@@ -65,6 +65,8 @@ class Game:
         self.enemy_speed = 2  
         
         self.enemy_hp = 100
+        self.enemy_alive = True
+        self.damage = False
         
         # self.testing_collision_area = pygame.Rect(250 , 450, 100, 100)
         self.player_area = pygame.Rect(self.player_x, self.player_y, 1, 1)
@@ -132,12 +134,15 @@ class Game:
                 if event.button == 1 and self.sword_connected == True:
                     self.swinging = True
                     self.swing_animation.frames_index = 0
+                    
             
             self.screen.blit(pygame.transform.scale(self.display, self.screen.get_size()))
             self.screen.blit(self.assets['player'], self.player_pos) # Blits the image, and sets the image position on the screen
             self.player_area.update(self.player_x, self.player_y, 100, 100)
              
-            self.screen.blit(self.assets['zombie'], self.enemy_pos) 
+            if self.enemy_alive == True:
+                self.screen.blit(self.assets['zombie'], self.enemy_pos) 
+                 
             self.screen.blit(self.assets['sword'], self.sword_pos) 
             
             
@@ -160,12 +165,36 @@ class Game:
             if self.swing_animation.frames_index == 0:
                 self.swinging = False 
                 
+                
             # Swing Collision
-            self.swing_area = pygame.Rect(self.swing_pos[0], self.swing_pos[1], 100, 100)
+            self.swing_area = pygame.Rect(self.swing_pos[0] + 10, self.swing_pos[1], 30, 50)
             
-            if self.swing_area.colliderect(self.enemy_area):
-                self.display.fill((0, 111, 22)) # Testing
+            
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if self.swing_area.colliderect(self.enemy_area):
+                    pygame.draw.rect(self.screen, (0, 0, 255), self.swing_area) # Temporary Code. This was used to visualise the hitbox
+                    self.damage = True
+            
+            # Damage Check     
+            if self.damage == True:
+                if self.swing_animation.frames_index == 2: # Honestly no clue why list value 2 is where damage registers
+                    pygame.time.get_ticks() + 1000
+                    self.damage = False
+                    self.enemy_hp -= 10
+                    
+                    
+            # Respawn Enemy 
+            
+                          
+            if self.enemy_hp == 0:
+                self.enemy_alive = False
+                delay = pygame.time.get_ticks() + 10000
+            
+            if self.enemy_alive == False and delay < pygame.time.get_ticks():
+                self.enemy_alive = True
+                    
                 pass
+                
             
             
             ''' if self.player_area.colliderect(self.testing_collision_area):
