@@ -1,6 +1,29 @@
 import pygame 
 import sys
+import time
 from utility import load_image, load_images  # Functions residing in the utility folder
+
+
+
+
+class Swing_Animation:
+    def __init__(self, frame):
+        self.frame = frame
+        self.frames = [load_image('weapons/sword-sprites/sword-swing4.png'),
+                       load_image('weapons/sword-sprites/sword-swing1.png'),
+                       load_image('weapons/sword-sprites/sword-swing2.png'),
+                       load_image('weapons/sword-sprites/sword-swing3.png')]
+        self.frames_index_max = len(self.frames) - 1
+        self.frames_index = self.frames_index_max
+        # self.pos = (0,0)
+        
+        
+    
+    def updateFrame(self):
+            if self.frames_index < self.frames_index_max:
+                self.frames_index += 1
+            else:
+                self.frames_index = 0
 
 
 class Game: 
@@ -46,6 +69,9 @@ class Game:
         self.sword_area = pygame.Rect(self.sword_x, self.sword_y, 100, 100)
         
         self.sword_connected = False
+        
+        self.swing_animation = Swing_Animation(self.assets['sword'])
+        self.swinging = False
         
         
 
@@ -113,6 +139,21 @@ class Game:
                     self.sword_pos = [self.player_x + offest_x, self.player_y] 
                     # The sword position is now set to the players position with some offset
             
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if event.button == 1 and self.sword_connected == True:
+                    self.swinging = True
+                    self.swing_animation.frames_index = 0
+                    
+                
+            if self.swinging == True:
+                self.swing_animation.updateFrame()
+                swing_pos = [self.player_x + 50, self.player_y] 
+                self.screen.blit(self.swing_animation.frames[self.swing_animation.frames_index],swing_pos)
+            
+            if self.swing_animation.frames_index == 0:
+                self.swinging = False 
+                
+                
             
             
             ''' if self.player_area.colliderect(self.testing_collision_area):

@@ -6,6 +6,7 @@
         "colliderect",
         "colorkey",
         "KEYUP",
+        "MOUSEBUTTONDOWN",
         "offest"
     ]
 }
