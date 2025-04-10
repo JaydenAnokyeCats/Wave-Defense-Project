@@ -64,13 +64,17 @@ class Game:
         self.player_speed = 5
         self.enemy_speed = 2  
         
+        self.enemy_hp = 100
+        
         # self.testing_collision_area = pygame.Rect(250 , 450, 100, 100)
         self.player_area = pygame.Rect(self.player_x, self.player_y, 1, 1)
+        self.enemy_area = pygame.Rect(700, 300, 50, 50)
         self.sword_area = pygame.Rect(self.sword_x, self.sword_y, 100, 100)
         
         self.sword_connected = False
         
         self.swing_animation = Swing_Animation(self.assets['sword'])
+         
         self.swinging = False
         
         
@@ -124,12 +128,18 @@ class Game:
                     if event.key == pygame.K_d:
                         self.movement[3] = False
             
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if event.button == 1 and self.sword_connected == True:
+                    self.swinging = True
+                    self.swing_animation.frames_index = 0
+            
             self.screen.blit(pygame.transform.scale(self.display, self.screen.get_size()))
             self.screen.blit(self.assets['player'], self.player_pos) # Blits the image, and sets the image position on the screen
             self.player_area.update(self.player_x, self.player_y, 100, 100)
              
             self.screen.blit(self.assets['zombie'], self.enemy_pos) 
             self.screen.blit(self.assets['sword'], self.sword_pos) 
+            
             
             if self.player_area.colliderect(self.sword_area): 
             # Checks if our player rect is colliding with the swords rect
@@ -139,21 +149,23 @@ class Game:
                     self.sword_pos = [self.player_x + offest_x, self.player_y] 
                     # The sword position is now set to the players position with some offset
             
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                if event.button == 1 and self.sword_connected == True:
-                    self.swinging = True
-                    self.swing_animation.frames_index = 0
-                    
-                
+            # Swing Animation
+            self.swing_pos = [self.player_x + 50, self.player_y]
+            
+                  
             if self.swinging == True:
                 self.swing_animation.updateFrame()
-                swing_pos = [self.player_x + 50, self.player_y] 
-                self.screen.blit(self.swing_animation.frames[self.swing_animation.frames_index],swing_pos)
+                self.screen.blit(self.swing_animation.frames[self.swing_animation.frames_index],self.swing_pos)
             
             if self.swing_animation.frames_index == 0:
                 self.swinging = False 
                 
-                
+            # Swing Collision
+            self.swing_area = pygame.Rect(self.swing_pos[0], self.swing_pos[1], 100, 100)
+            
+            if self.swing_area.colliderect(self.enemy_area):
+                self.display.fill((0, 111, 22)) # Testing
+                pass
             
             
             ''' if self.player_area.colliderect(self.testing_collision_area):
