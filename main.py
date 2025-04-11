@@ -2,6 +2,7 @@ import pygame
 import sys
 import time
 from utility import load_image, load_images  # Functions residing in the utility folder
+from enemy_movement import Enemy
 
 
 
@@ -40,8 +41,6 @@ class Game:
         # self.left_collision = pygame.Rect(0, 0, 50, 700)  # Left edge
         # self.right_collision = pygame.Rect(900 - 50, 0, 50, 700)  # Right edge
 
-        
-        
         self.clock = pygame.time.Clock()  # Helps restrict frame rate
         
         self.movement = [False, False, False, False]
@@ -61,12 +60,14 @@ class Game:
         self.enemy_pos = [700, 300]
         self.sword_pos = [self.sword_x, self.sword_y]
         
-        self.player_speed = 5
-        self.enemy_speed = 2  
+        self.player_speed = 4
+        self.enemy_speed = 2
         
+        self.enemy_movement = Enemy(self.enemy_pos, self.enemy_speed)
         self.enemy_hp = 100
         self.enemy_alive = True
         self.damage = False
+        
         
         # self.testing_collision_area = pygame.Rect(250 , 450, 100, 100)
         self.player_area = pygame.Rect(self.player_x, self.player_y, 1, 1)
@@ -74,13 +75,15 @@ class Game:
         self.sword_area = pygame.Rect(self.sword_x, self.sword_y, 100, 100)
         
         self.sword_connected = False
-        
         self.swing_animation = Swing_Animation(self.assets['sword'])
-         
         self.swinging = False
-        
+        self.delay = 0
         
 
+    #def updateEnemy(self):
+        #self.enemy_movement.Follow_Player(self.player_x, self.player_y)
+        #pass
+    
     
     def run(self):
         running = True
@@ -92,6 +95,7 @@ class Game:
             self.display.fill((14, 111, 222))  # Placeholder method for me setting a background
             
             
+            # Movement Calls
             if self.movement[0]:
                 self.player_y -= self.player_speed  # Moves Up
             if self.movement[1]:
@@ -130,22 +134,27 @@ class Game:
                     if event.key == pygame.K_d:
                         self.movement[3] = False
             
+            
+            
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1 and self.sword_connected == True:
                     self.swinging = True
                     self.swing_animation.frames_index = 0
                     
-            
+            # Screen set-up and image loading
             self.screen.blit(pygame.transform.scale(self.display, self.screen.get_size()))
             self.screen.blit(self.assets['player'], self.player_pos) # Blits the image, and sets the image position on the screen
             self.player_area.update(self.player_x, self.player_y, 100, 100)
-             
-            if self.enemy_alive == True:
-                self.screen.blit(self.assets['zombie'], self.enemy_pos) 
+            
+            # Enemy Status' 
+            if self.enemy_alive:
+                self.screen.blit(self.assets['zombie'], self.enemy_pos)
+                self.enemy_movement.Follow_Player(self.player_x, self.player_y)
+                self.enemy_area.topleft = self.enemy_pos # 
                  
             self.screen.blit(self.assets['sword'], self.sword_pos) 
             
-            
+            # Player-Sword Interaction
             if self.player_area.colliderect(self.sword_area): 
             # Checks if our player rect is colliding with the swords rect
                 self.sword_connected = True
@@ -157,7 +166,6 @@ class Game:
             # Swing Animation
             self.swing_pos = [self.player_x + 50, self.player_y]
             
-                  
             if self.swinging == True:
                 self.swing_animation.updateFrame()
                 self.screen.blit(self.swing_animation.frames[self.swing_animation.frames_index],self.swing_pos)
@@ -168,11 +176,9 @@ class Game:
                 
             # Swing Collision
             self.swing_area = pygame.Rect(self.swing_pos[0] + 10, self.swing_pos[1], 30, 50)
-            
-            
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if self.swing_area.colliderect(self.enemy_area):
-                    pygame.draw.rect(self.screen, (0, 0, 255), self.swing_area) # Temporary Code. This was used to visualise the hitbox
+                    # pygame.draw.rect(self.screen, (0, 0, 255), self.swing_area) Temporary Code. This was used to visualize the hitbox
                     self.damage = True
             
             # Damage Check     
@@ -182,18 +188,20 @@ class Game:
                     self.damage = False
                     self.enemy_hp -= 10
                     
-                    
-            # Respawn Enemy 
-            
-                          
-            if self.enemy_hp == 0:
+            # Respawn Enemy
+            if self.enemy_hp <= 0 and self.enemy_alive:
+                print("Enemy has died") # Debugging
                 self.enemy_alive = False
-                delay = pygame.time.get_ticks() + 10000
+                self.delay = pygame.time.get_ticks() + 2500
             
-            if self.enemy_alive == False and delay < pygame.time.get_ticks():
+            if self.enemy_alive == False and pygame.time.get_ticks() > self.delay:
+                print("Respawning...") # Debugging
                 self.enemy_alive = True
-                    
-                pass
+                self.enemy_hp = 100
+                self.enemy_pos = [700, 300]
+                self.enemy_movement = Enemy(self.enemy_pos, self.enemy_speed) # Reenables the follow function
+
+            
                 
             
             
