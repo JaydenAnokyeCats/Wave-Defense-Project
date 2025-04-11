@@ -34,7 +34,8 @@ class Game:
         pygame.display.set_caption('Defenders')  # Creates window title
         
         self.screen = pygame.display.set_mode((900, 700))  # Window size
-        self.display = pygame.Surface((450, 350))
+        self.display = pygame.Surface((900, 700))
+        
         
         # self.top_collision = pygame.Rect(0, 0, 900, 50)  # Top edge
         # self.bottom_collision = pygame.Rect(0, 700 - 50, 900, 50)  # Bottom edge
@@ -46,10 +47,12 @@ class Game:
         self.movement = [False, False, False, False]
         
         self.assets = {
+            'background': load_image('background/whyjustwhy.png'),
             'player': load_image('player_sprites/xRXXModel.0012.png'),
             'zombie': load_image('enemy_sprites/xRXXModel.0013.png'),
             'sword': load_image('weapons/sword.png'),
         }
+        
         
         self.player_x = 100
         self.player_y = 200
@@ -92,7 +95,8 @@ class Game:
         while running:
             offest_x = 25
             
-            self.display.fill((14, 111, 222))  # Placeholder method for me setting a background
+            
+            #self.display.fill((14, 111, 222))  # Placeholder method for me setting a background
             
             
             # Movement Calls
@@ -142,7 +146,8 @@ class Game:
                     self.swing_animation.frames_index = 0
                     
             # Screen set-up and image loading
-            self.screen.blit(pygame.transform.scale(self.display, self.screen.get_size()))
+            self.display.blit(self.assets['background'])
+            self.screen.blit(pygame.transform.scale(self.display, self.screen.get_size()), (0,0))
             self.screen.blit(self.assets['player'], self.player_pos) # Blits the image, and sets the image position on the screen
             self.player_area.update(self.player_x, self.player_y, 100, 100)
             
