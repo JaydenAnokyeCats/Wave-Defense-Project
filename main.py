@@ -47,7 +47,7 @@ class Game:
         self.movement = [False, False, False, False]
         
         self.assets = {
-            'background': load_image('background/whyjustwhy.png'),
+            'background': load_image('background/defendersBackground.png'),
             'player': load_image('player_sprites/xRXXModel.0012.png'),
             'zombie': load_image('enemy_sprites/xRXXModel.0013.png'),
             'sword': load_image('weapons/sword.png'),
@@ -56,8 +56,8 @@ class Game:
         
         self.player_x = 100
         self.player_y = 200
-        self.sword_x = 50
-        self.sword_y = 550
+        self.sword_x = 125
+        self.sword_y = 570
         
         self.player_pos = [self.player_x, self.player_y]
         self.enemy_pos = [700, 300]
